@@ -20,7 +20,7 @@ const navigator = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'AgeScreen',
+    initialRouteName: 'Age',
     defaultNavigationOptions: {
       title: 'Redux-Middleware',
     },
@@ -30,8 +30,8 @@ const navigator = createStackNavigator(
 
 const App = createAppContainer(navigator);
 
-export default () => {
+export default () => (
   <Provider store={store}>
     <App />
-  </Provider>;
-};
+  </Provider>
+);

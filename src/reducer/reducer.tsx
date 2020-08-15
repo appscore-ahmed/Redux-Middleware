@@ -1,5 +1,3 @@
-import { Action } from 'redux';
-
 interface Age {
   age: number;
 }
@@ -25,7 +23,6 @@ const ageReducer = (state = initState, action: ageActions): Age => {
     default:
       return state;
   }
-  return state;
 };
 
 export default ageReducer;
