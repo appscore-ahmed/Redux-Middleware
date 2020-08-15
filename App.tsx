@@ -1,21 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import AgeScreen from './src/screens/AgeScreen';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+import ageReducer from './src/reducer/reducer';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const store = createStore(ageReducer, applyMiddleware(thunk));
+
+const navigator = createStackNavigator(
+  {
+    Age: {
+      screen: AgeScreen,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
   },
-});
+  {
+    initialRouteName: 'AgeScreen',
+    defaultNavigationOptions: {
+      title: 'Redux-Middleware',
+    },
+    headerMode: 'none',
+  }
+);
+
+const App = createAppContainer(navigator);
+
+export default () => {
+  <Provider store={store}>
+    <App />
+  </Provider>;
+};
