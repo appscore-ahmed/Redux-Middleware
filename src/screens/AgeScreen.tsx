@@ -1,19 +1,23 @@
-import React, { useState, Dispatch } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch, AnyAction } from 'redux';
 
 interface Age {
   age: number;
+  name: string;
+  displayName: () => void;
   ageUp: () => void;
   ageDown: () => void;
 }
 
 const AgeScreen = (props: Age) => {
   const [age, setAge] = useState(0);
-
+  const [name, setName] = useState('');
   return (
     <View style={styles.viewStyle}>
       <Text style={styles.textStyle}>Age is: {age}</Text>
+      <Text style={styles.textStyle}>Name is: {props.name}</Text>
       <View style={styles.buttonStyle}>
         <Button
           title='Increment'
@@ -30,6 +34,16 @@ const AgeScreen = (props: Age) => {
           onPress={() => {
             props.ageDown();
             setAge(props.age);
+          }}
+        />
+      </View>
+      <View style={styles.buttonStyle}>
+        <Button
+          title='Display Name'
+          onPress={() => {
+            props.displayName();
+            // console.log(props.name);
+            setName(props.name);
           }}
         />
       </View>
@@ -53,13 +67,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispathToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return {
     ageUp: () => {
-      dispatch({ type: 'INCREMENT' });
+      dispatch({ type: 'INCREMENT', payload: 2 });
     },
     ageDown: () => {
-      dispatch({ type: 'DECREMENT' });
+      dispatch({ type: 'DECREMENT', payload: 3 });
+    },
+    displayName: () => {
+      dispatch({ type: 'NAME', payload: 'Ahmed' });
     },
   };
   //   ageUp: () => {
@@ -71,7 +88,7 @@ const mapDispathToProps = (dispatch: any) => {
 };
 
 const mapStateToProps = (state: Age) => {
-  return { age: state.age };
+  return { age: state.age, name: state.name };
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(AgeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(AgeScreen);

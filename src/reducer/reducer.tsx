@@ -1,13 +1,14 @@
-
 interface Age {
   age: number;
+  name: string;
 }
 
-const initState: Age = { age: 0 };
+const initState: Age = { age: 0, name: '' };
 
 type ageActions =
-  | { type: 'INCREMENT'; payload: Age }
-  | { type: 'DECREMENT'; payload: Age };
+  | { type: 'INCREMENT'; payload: Age['age'] }
+  | { type: 'DECREMENT'; payload: Age['age'] }
+  | { type: 'NAME'; payload: Age['name'] };
 
 const ageReducer = (state = initState, action: ageActions): Age => {
   switch (action.type) {
@@ -15,13 +16,17 @@ const ageReducer = (state = initState, action: ageActions): Age => {
       console.log('INCREMENT called');
       return {
         ...state,
-        age: action.payload.age + 1,
+        age: state.age + action.payload,
       };
     case 'DECREMENT':
       return {
         ...state,
-        age: action.payload.age - 1,
+        age: state.age - action.payload,
       };
+    case 'NAME': {
+      console.log('NAME called');
+      return { ...state, name: action.payload };
+    }
     default:
       return state;
   }
