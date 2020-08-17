@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, Image, FlatList } from 'react-native';
 
 import * as actionCreator from '../store/actions/actions';
 import results from '../type/AgeType';
@@ -16,35 +16,9 @@ interface Age {
   fetcher: () => void;
 }
 
-// interface results {
-//   gender: string;
-//   name: name;
-//   location: location;
-//   email: string;
-//   picture: picture;
-// }
-// interface name {
-//   title: string;
-//   first: string;
-//   last: string;
-// }
-
-// interface location {
-//   street: {
-//     number: Number;
-//     name: string;
-//   };
-// }
-
-// interface picture {
-//   large: string;
-//   medium: string;
-//   thumbnail: string;
-// }
-
 const AgeScreen = (props: Age) => {
   const [age, setAge] = useState(0);
-  const [name, setName] = useState('');
+
   return (
     <View style={styles.viewStyle}>
       <Text style={styles.textStyle}>Age is: {props.age}</Text>
@@ -78,6 +52,33 @@ const AgeScreen = (props: Age) => {
           }}
         />
       </View>
+      <View>
+        <FlatList
+          data={Object.values(props.random)}
+          horizontal
+          keyExtractor={(item, index) => item.email}
+          renderItem={({ item }) => {
+            return (
+              <View style={styles.flatListStyle}>
+                {!!item.name ? (
+                  <>
+                    <Image
+                      source={{ uri: item.picture['large'] }}
+                      style={{ width: 200, height: 200 }}
+                    />
+                    <Text>{item.gender}</Text>
+                    <Text>
+                      {item.name['first']}
+                      {item.name['last']}
+                    </Text>
+                  </>
+                ) : null}
+              </View>
+            );
+          }}
+          initialNumToRender={1}
+        />
+      </View>
     </View>
   );
 };
@@ -95,6 +96,10 @@ const styles = StyleSheet.create({
   buttonStyle: {
     marginHorizontal: 20,
     marginVertical: 20,
+  },
+  flatListStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
