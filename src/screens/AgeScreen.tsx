@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
+import { connect, ConnectedProps } from 'react-redux';
 
-const AgeScreen = () => {
+interface Age {
+  age: number;
+  ageUp: () => void;
+  ageDown: () => void;
+}
+
+const AgeScreen = (props: Age) => {
   const [age, setAge] = useState(0);
 
   return (
@@ -11,7 +18,9 @@ const AgeScreen = () => {
         <Button
           title='Increment'
           onPress={() => {
-            setAge(age + 1);
+            props.ageUp();
+            console.log(props.age);
+            setAge(props.age);
           }}
         />
       </View>
@@ -19,7 +28,8 @@ const AgeScreen = () => {
         <Button
           title='Decrement'
           onPress={() => {
-            setAge(age - 1);
+            props.ageDown();
+            setAge(props.age);
           }}
         />
       </View>
@@ -43,4 +53,25 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AgeScreen;
+const mapDispathToProps = (dispatch: any) => {
+  return {
+    ageUp: () => {
+      dispatch({ type: 'INCREMENT' });
+    },
+    ageDown: () => {
+      dispatch({ type: 'DECREMENT' });
+    },
+  };
+  //   ageUp: () => {
+  //     ({ type: 'INCREMENT' });
+  //   },
+  //   ageDown: () => {
+  //     ({ type: 'DECREMENT' });
+  //   },
+};
+
+const mapStateToProps = (state: Age) => {
+  return { age: state.age };
+};
+
+export default connect(mapStateToProps, mapDispathToProps)(AgeScreen);

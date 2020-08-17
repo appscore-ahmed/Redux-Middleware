@@ -30,7 +30,7 @@ const navigator = createStackNavigator(
 
 const App = createAppContainer(navigator);
 
-export default () => (
+export default () => (  
   <Provider store={store}>
     <App />
   </Provider>

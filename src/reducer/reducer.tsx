@@ -1,3 +1,4 @@
+
 interface Age {
   age: number;
 }
@@ -11,6 +12,7 @@ type ageActions =
 const ageReducer = (state = initState, action: ageActions): Age => {
   switch (action.type) {
     case 'INCREMENT':
+      console.log('INCREMENT called');
       return {
         ...state,
         age: action.payload.age + 1,
