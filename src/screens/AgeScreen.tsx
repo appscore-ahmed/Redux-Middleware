@@ -1,23 +1,53 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-import { connect, ConnectedProps } from 'react-redux';
-import { Dispatch, AnyAction } from 'redux';
+
+import * as actionCreator from '../store/actions/actions';
+import results from '../type/AgeType';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 interface Age {
   age: number;
   name: string;
+  random: results;
   displayName: () => void;
   ageUp: () => void;
   ageDown: () => void;
+  fetcher: () => void;
 }
+
+// interface results {
+//   gender: string;
+//   name: name;
+//   location: location;
+//   email: string;
+//   picture: picture;
+// }
+// interface name {
+//   title: string;
+//   first: string;
+//   last: string;
+// }
+
+// interface location {
+//   street: {
+//     number: Number;
+//     name: string;
+//   };
+// }
+
+// interface picture {
+//   large: string;
+//   medium: string;
+//   thumbnail: string;
+// }
 
 const AgeScreen = (props: Age) => {
   const [age, setAge] = useState(0);
   const [name, setName] = useState('');
   return (
     <View style={styles.viewStyle}>
-      <Text style={styles.textStyle}>Age is: {age}</Text>
-      <Text style={styles.textStyle}>Name is: {props.name}</Text>
+      <Text style={styles.textStyle}>Age is: {props.age}</Text>
       <View style={styles.buttonStyle}>
         <Button
           title='Increment'
@@ -39,11 +69,12 @@ const AgeScreen = (props: Age) => {
       </View>
       <View style={styles.buttonStyle}>
         <Button
-          title='Display Name'
+          title='fetch Data'
           onPress={() => {
-            props.displayName();
+            props.fetcher();
             // console.log(props.name);
-            setName(props.name);
+            // setName(props.random);
+            console.log(props.random);
           }}
         />
       </View>
@@ -67,28 +98,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     ageUp: () => {
-      dispatch({ type: 'INCREMENT', payload: 2 });
+      dispatch(actionCreator.ageUp(2));
     },
     ageDown: () => {
-      dispatch({ type: 'DECREMENT', payload: 3 });
+      dispatch(actionCreator.ageDown(2));
     },
     displayName: () => {
       dispatch({ type: 'NAME', payload: 'Ahmed' });
     },
+    fetcher: () => {
+      dispatch(actionCreator.fetchRandomUsers());
+    },
   };
-  //   ageUp: () => {
-  //     ({ type: 'INCREMENT' });
-  //   },
-  //   ageDown: () => {
-  //     ({ type: 'DECREMENT' });
-  //   },
 };
 
 const mapStateToProps = (state: Age) => {
-  return { age: state.age, name: state.name };
+  return { age: state.age, name: state.name, random: state.random };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AgeScreen);
