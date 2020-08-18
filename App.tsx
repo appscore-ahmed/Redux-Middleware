@@ -5,10 +5,21 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import ageReducer from './src/store/reducer/reducer';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
+import { watchAgeUp } from './src/sagas/saga';
 
-const store = createStore(ageReducer, applyMiddleware(thunk));
+const sagaMiddleware = createSagaMiddleware();
+
+/* To combine middlewares together, create an array of them */
+const middlewares = [sagaMiddleware, thunk];
+
+/* when middlewares are combine, passing them to store needs
+ to be done through "compose" with "..." prefix*/
+const store = createStore(ageReducer, compose(applyMiddleware(...middlewares)));
+
+sagaMiddleware.run(watchAgeUp);
 
 const navigator = createStackNavigator(
   {
@@ -30,7 +41,7 @@ const navigator = createStackNavigator(
 
 const App = createAppContainer(navigator);
 
-export default () => (  
+export default () => (
   <Provider store={store}>
     <App />
   </Provider>

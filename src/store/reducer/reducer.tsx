@@ -27,14 +27,15 @@ const initState: Age = {
 };
 
 type ageActions =
-  | { type: 'INCREMENT'; payload: Age['age'] }
+  // | { type: 'INCREMENT'; payload: Age['age'] }
+  | { type: 'INCREMENT_ASYNC'; payload: Age['age'] }
   | { type: 'DECREMENT'; payload: Age['age'] }
   // | { type: 'NAME'; payload: Age['name'] }
   | { type: 'FETCH_RANDOM_USERS'; payload: Age['random'] };
 
 const ageReducer = (state = initState, action: ageActions): Age => {
   switch (action.type) {
-    case 'INCREMENT':
+    case 'INCREMENT_ASYNC':
       console.log('INCREMENT called');
       return {
         ...state,

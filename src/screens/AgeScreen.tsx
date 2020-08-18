@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
     ageUp: () => {
-      dispatch(actionCreator.ageUp(2));
+      // dispatch(actionCreator.ageUp(2));
+      dispatch({ type: 'INCREMENT', payload: 2 });
     },
     ageDown: () => {
       dispatch(actionCreator.ageDown(2));
