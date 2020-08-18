@@ -1,0 +1,8 @@
+enum actionTypes {
+  INCREMENT = 'INCREMENT',
+  INCREMENT_ASYNC = 'INCREMENT_ASYNC',
+  DECREMENT = 'DECREMENT',
+  FETCH_RANDOM_USERS = 'FETCH_RANDOM_USERS',
+}
+
+export { actionTypes };

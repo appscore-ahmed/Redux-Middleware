@@ -5,6 +5,7 @@ import * as actionCreator from '../store/actions/actions';
 import results from '../type/AgeType';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { actionTypes } from '../store/actiontypes/actiontypes';
 
 interface Age {
   age: number;

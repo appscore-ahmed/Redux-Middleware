@@ -1,6 +1,8 @@
+import { actionTypes } from '../actiontypes/actiontypes';
+
 export const ageUpAsync = (value: number) => {
   console.log('ageUpAsync');
-  return { type: 'INCREMENT', payload: value };
+  return { type: actionTypes.INCREMENT, payload: value };
 };
 
 export const ageUp = (value: number) => {
@@ -12,7 +14,7 @@ export const ageUp = (value: number) => {
 };
 
 export const ageDown = (value: number) => {
-  return { type: 'DECREMENT', payload: value };
+  return { type: actionTypes.DECREMENT, payload: value };
 };
 
 export const fetchRandomUsers = () => {
@@ -23,7 +25,7 @@ export const fetchRandomUsers = () => {
       .then((response) => response.json())
       .then((responseJson) => {
         dispatch({
-          type: 'FETCH_RANDOM_USERS',
+          type: actionTypes.FETCH_RANDOM_USERS,
           payload: responseJson.results,
         });
       })

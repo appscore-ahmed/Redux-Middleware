@@ -1,4 +1,5 @@
 import results from '../../type/AgeType';
+import { actionTypes } from '../actiontypes/actiontypes';
 
 interface Age {
   age: number;
@@ -27,30 +28,30 @@ const initState: Age = {
 };
 
 type ageActions =
-  // | { type: 'INCREMENT'; payload: Age['age'] }
-  | { type: 'INCREMENT_ASYNC'; payload: Age['age'] }
-  | { type: 'DECREMENT'; payload: Age['age'] }
-  // | { type: 'NAME'; payload: Age['name'] }
-  | { type: 'FETCH_RANDOM_USERS'; payload: Age['random'] };
+  // | { type: actionTypes.INCREMENT/* 'INCREMENT' */; payload: Age['age'] }
+  | { type: actionTypes.INCREMENT_ASYNC; payload: Age['age'] }
+  | { type: actionTypes.DECREMENT; payload: Age['age'] }
+  // | { type: actionTypes.NAME; payload: Age['name'] }
+  | { type: actionTypes.FETCH_RANDOM_USERS; payload: Age['random'] };
 
 const ageReducer = (state = initState, action: ageActions): Age => {
   switch (action.type) {
-    case 'INCREMENT_ASYNC':
+    case actionTypes.INCREMENT_ASYNC:
       console.log('INCREMENT called');
       return {
         ...state,
         age: state.age + action.payload,
       };
-    case 'DECREMENT':
+    case actionTypes.DECREMENT:
       return {
         ...state,
         age: state.age - action.payload,
       };
-    // case 'NAME': {
+    // case actionTypes.NAME: {
     //   console.log('NAME called');
     //   return { ...state, name: action.payload };
     // }
-    case 'FETCH_RANDOM_USERS': {
+    case actionTypes.FETCH_RANDOM_USERS: {
       return { ...state, random: action.payload };
     }
     default:
