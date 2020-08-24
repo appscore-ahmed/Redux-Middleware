@@ -19,4 +19,3 @@ here ageUpAsync will receive them.  */
 export function* watchAgeUp() {
   yield takeLatest(actionTypes.INCREMENT, ageUpAsync);
 }
-

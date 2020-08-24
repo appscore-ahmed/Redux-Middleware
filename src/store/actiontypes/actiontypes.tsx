@@ -3,6 +3,7 @@ enum actionTypes {
   INCREMENT_ASYNC = 'INCREMENT_ASYNC',
   DECREMENT = 'DECREMENT',
   FETCH_RANDOM_USERS = 'FETCH_RANDOM_USERS',
+  SIGN_IN = 'SIGN_IN',
 }
 
 export { actionTypes };

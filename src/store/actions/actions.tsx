@@ -1,4 +1,6 @@
 import { actionTypes } from '../actiontypes/actiontypes';
+import { SIGN_IN, SIGN_IN_FAILED } from '../../types/types';
+import firebase from 'firebase';
 
 export const ageUpAsync = (value: number) => {
   console.log('ageUpAsync');
@@ -32,5 +34,19 @@ export const fetchRandomUsers = () => {
       .catch((error) => {
         console.log('Error selecting random data: ' + error);
       });
+  };
+};
+
+export const signInUser = (username: string, password: string) => {
+  return (dispatch: any) => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(username, password)
+      .then((response) => response.user?.uid)
+      .then((uid) => {
+        console.log(uid);
+        dispatch({ type: SIGN_IN, payload: uid });
+      })
+      .catch((error) => dispatch({ type: SIGN_IN_FAILED, payload: error }));
   };
 };

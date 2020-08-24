@@ -1,5 +1,6 @@
 import React from 'react';
 import AgeScreen from './src/screens/AgeScreen';
+import LoginScreen from './src/screens/LoginScreen';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
@@ -33,9 +34,15 @@ const navigator = createStackNavigator(
         headerShown: false,
       },
     },
+    Login: {
+      screen: LoginScreen,
+      navigationOptions: {
+        headerShown: false,
+      },
+    },
   },
   {
-    initialRouteName: 'Age',
+    initialRouteName: 'Login',
     defaultNavigationOptions: {
       title: 'Redux-Middleware',
     },

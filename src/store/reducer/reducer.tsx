@@ -5,26 +5,14 @@ interface Age {
   age: number;
   // name: string;
   random: results[];
+  sign_status: boolean;
 }
-
-const initRandom = () => {
-  return {
-    gender: '',
-    name: {
-      title: '',
-      first: '',
-      last: '',
-    },
-    location: { street: { number: 0, name: '' } },
-    email: '',
-    picture: { large: '', medium: '', thumbnail: '' },
-  };
-};
 
 const initState: Age = {
   age: 0,
   // name: '',
   random: new Array<results>(),
+  sign_status: false,
 };
 
 type ageActions =
@@ -32,7 +20,8 @@ type ageActions =
   | { type: actionTypes.INCREMENT_ASYNC; payload: Age['age'] }
   | { type: actionTypes.DECREMENT; payload: Age['age'] }
   // | { type: actionTypes.NAME; payload: Age['name'] }
-  | { type: actionTypes.FETCH_RANDOM_USERS; payload: Age['random'] };
+  | { type: actionTypes.FETCH_RANDOM_USERS; payload: Age['random'] }
+  | { type: actionTypes.SIGN_IN; payload: Age['sign_status'] };
 
 const ageReducer = (state = initState, action: ageActions): Age => {
   switch (action.type) {
@@ -53,6 +42,9 @@ const ageReducer = (state = initState, action: ageActions): Age => {
     // }
     case actionTypes.FETCH_RANDOM_USERS: {
       return { ...state, random: action.payload };
+    }
+    case actionTypes.SIGN_IN: {
+      return { ...state, sign_status: action.payload ? true : false };
     }
     default:
       return state;
