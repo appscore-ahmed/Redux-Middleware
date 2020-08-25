@@ -26,19 +26,7 @@ const navigateTo = (navigation: navigation, route: string) => {
 
 const LoginScreen = (props: Age, navi: navigation) => {
   const navigation = useNavigation();
-  useEffect(() => {
-    firebase.initializeApp({
-      apiKey: 'AIzaSyAX4uPmSuKrevRUX3giXmcwxDaleJANSII',
-      authDomain: 'authentication-36258.firebaseapp.com',
-      databaseURL: 'https://authentication-36258.firebaseio.com',
-      projectId: 'authentication-36258',
-      storageBucket: 'authentication-36258.appspot.com',
-      messagingSenderId: '879618070231',
-      appId: '1:879618070231:web:d9347bab650129f3038292',
-      measurementId: 'G-2WVRZQCVEY',
-    });
-  }, [true]);
-
+   
   return (
     <View style={styles.viewStyle}>
       <LoginFormComponent

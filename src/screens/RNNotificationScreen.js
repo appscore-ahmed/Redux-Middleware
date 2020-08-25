@@ -3,6 +3,7 @@ import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, Button, Platform } from 'react-native';
+import firebase from 'firebase';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,17 +20,24 @@ export default function RNNotificationScreen() {
   const responseListener = useRef();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
+    notificationListener.current = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        setNotification(notification);
+      }
+    );
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        console.log(response);
+        alert(response);
+      }
+    );
 
     return () => {
       Notifications.removeNotificationSubscription(notificationListener);
@@ -43,15 +51,21 @@ export default function RNNotificationScreen() {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'space-around',
-      }}>
+      }}
+    >
       <Text>Your expo push token: {expoPushToken}</Text>
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Title: {notification && notification.request.content.title} </Text>
+        <Text>
+          Title: {notification && notification.request.content.title}{' '}
+        </Text>
         <Text>Body: {notification && notification.request.content.body}</Text>
-        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
+        <Text>
+          Data:{' '}
+          {notification && JSON.stringify(notification.request.content.data)}
+        </Text>
       </View>
       <Button
-        title="Press to Send Notification"
+        title='Press to Send Notification'
         onPress={async () => {
           await sendPushNotification(expoPushToken);
         }}
@@ -84,9 +98,12 @@ async function sendPushNotification(expoPushToken) {
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
-    const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
+      console.log('granted');
       const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
       finalStatus = status;
     }
@@ -100,14 +117,14 @@ async function registerForPushNotificationsAsync() {
     alert('Must use physical device for Push Notifications');
   }
 
-  if (Platform.OS === 'android') {
+  // if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
+      lightColor: '#FFF', //'#FF231F7C',
     });
-  }
+  // }
 
   return token;
 }

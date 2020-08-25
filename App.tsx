@@ -1,7 +1,7 @@
 import React from 'react';
 import AgeScreen from './src/screens/AgeScreen';
 import LoginScreen from './src/screens/LoginScreen';
-import RNNotificationScreen from './src/screens/RNNotificationScreen'
+import RNNotificationScreen from './src/screens/RNNotificationScreen';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
@@ -12,6 +12,20 @@ import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 import { watchAgeUp } from './src/sagas/saga';
+import firebase from 'firebase';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyAX4uPmSuKrevRUX3giXmcwxDaleJANSII',
+  authDomain: 'authentication-36258.firebaseapp.com',
+  databaseURL: 'https://authentication-36258.firebaseio.com',
+  projectId: 'authentication-36258',
+  storageBucket: 'authentication-36258.appspot.com',
+  messagingSenderId: '879618070231',
+  appId: '1:879618070231:web:d9347bab650129f3038292',
+  measurementId: 'G-2WVRZQCVEY',
+};
+
+firebase.initializeApp(firebaseConfig);
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -49,7 +63,7 @@ const navigator = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'Notifications',
+    initialRouteName: 'Login',
     defaultNavigationOptions: {
       title: 'Redux-Middleware',
     },
