@@ -16,6 +16,10 @@
     },
     "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.emazdoor.rnnotification",
+      "googleServicesFile": "./google-services.json"
+    },
     "ios": {
       "supportsTablet": true
     },

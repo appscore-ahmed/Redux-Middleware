@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "943161364323",
+    "firebase_url": "https://rnnotification-7b6b3.firebaseio.com",
+    "project_id": "rnnotification-7b6b3",
+    "storage_bucket": "rnnotification-7b6b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943161364323:android:88cdf3f4d403301a0d4d56",
+        "android_client_info": {
+          "package_name": "com.emazdoor.rnnotification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943161364323-g39icpmfklgkluufnohhjvgbj1qml8ej.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPv1jtOLeB6QmixdlX0CCKVunY9luVg54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943161364323-g39icpmfklgkluufnohhjvgbj1qml8ej.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
