@@ -37,6 +37,13 @@ export const fetchRandomUsers = () => {
   };
 };
 
+export const addToFirebaseDatabase = () => {
+  const firebaseObject = firebase.database().ref('/');
+  var key: string = firebaseObject.push().key;
+  console.log(key);
+  firebaseObject.child(key).set({ name: 'test' });
+};
+
 export const signInUser = (username: string, password: string) => {
   return (dispatch: any) => {
     firebase
@@ -46,6 +53,7 @@ export const signInUser = (username: string, password: string) => {
       .then((uid) => {
         console.log(uid);
         dispatch({ type: SIGN_IN, payload: uid });
+        // addToFirebaseDatabase();
       })
       .catch((error) => dispatch({ type: SIGN_IN_FAILED, payload: error }));
   };

@@ -67,7 +67,7 @@ const navigator = createStackNavigator(
     defaultNavigationOptions: {
       title: 'Redux-Middleware',
     },
-    headerMode: 'none',
+    headerMode: 'none', 
   }
 );
 

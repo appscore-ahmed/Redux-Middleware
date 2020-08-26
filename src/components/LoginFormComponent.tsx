@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, Button } from 'react-native';
 import CustomTextInput from '../components/CustomTextInput';
 import { USER_NAME, PASSWORD } from '../types/types';
+import firebase from 'firebase';
 
 interface IProps {
   signIn: (username: string, password: string) => void;
@@ -32,7 +33,12 @@ const LoginFormComponent = ({ signIn, ...props }: IProps) => {
         />
       </View>
       <View style={styles.viewStyle}>
-        <Button title='Sign in' onPress={() => signIn(username, password)} />
+        <Button
+          title='Sign in'
+          onPress={() => {
+            signIn(username, password);
+          }}
+        />
       </View>
     </View>
   );

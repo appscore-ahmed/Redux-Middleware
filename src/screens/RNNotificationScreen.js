@@ -35,7 +35,6 @@ export default function RNNotificationScreen() {
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         console.log(response);
-        alert(response);
       }
     );
 
@@ -117,14 +116,14 @@ async function registerForPushNotificationsAsync() {
     alert('Must use physical device for Push Notifications');
   }
 
-  // if (Platform.OS === 'android') {
+  if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FFF', //'#FF231F7C',
     });
-  // }
+  }
 
   return token;
 }
