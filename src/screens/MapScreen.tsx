@@ -6,7 +6,7 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Point } from 'react-native-maps';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import { takeLatest } from 'redux-saga/effects';
@@ -33,14 +33,26 @@ const initialState = {
   longitudeDelta: 0.0421,
 };
 
+export interface LatLng {
+  latitude: number;
+  longitude: number;
+}
+
+interface position {
+  x: number | undefined;
+  y: number | undefined;
+}
+
 const MapScreen = () => {
-  const mapRef = useRef();
+  let mapRef: MapView | null;
   const [currentLocation, setCurrentLocation] = useState<region>(initialState);
   const [locationResult, setLocationResult] = useState('');
   const [location, setLocation] = useState<coords>({
     latitude: -37.7123113,
     longitude: 144.5592334,
   });
+
+  const [position, setPosition] = useState<position>();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -53,27 +65,16 @@ const MapScreen = () => {
       (error) => alert(error.message),
       { timeout: 20000, maximumAge: 1000 }
     );
-    // _getLocationAsync();
   }, []);
-
-  const _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      setLocationResult('Permission to access location was denied');
-      setLocation(location);
-      console.log(location);
-    }
-    let newLocation = await Location.getCurrentPositionAsync();
-    setLocationResult(JSON.stringify(newLocation));
-    setLocation(newLocation.coords);
-    console.log(newLocation);
-  };
 
   return (
     <View style={styles.container}>
       {currentLocation.latitude ? (
         <MapView
-          ref={mapRef}
+          provider='google'
+          ref={(ref) => {
+            mapRef = ref;
+          }}
           style={styles.mapStyle}
           initialRegion={{
             latitude: location?.latitude,
@@ -83,13 +84,21 @@ const MapScreen = () => {
           }}
           onRegionChange={setCurrentLocation}
           showsUserLocation
+          onLayout={() =>
+            // mapRef?.pointForCoordinate({
+            //   latitude: location.latitude,
+            //   longitude: location.longitude,
+            // })
+            mapRef?.coordinateForPoint({ x: position?.x, y: position?.y })
+          }
           // onUserLocationChange={(coordinate) =>
           //   console.log(coordinate.nativeEvent.coordinate)
           // }
           // onPanDrag={(coordinate) => console.log(coordinate.nativeEvent.coordinate)}
           onPress={(coordinate) => {
             setLocation(coordinate.nativeEvent.coordinate);
-            console.log(coordinate.nativeEvent.coordinate);
+            console.log(coordinate.nativeEvent.position);
+            setPosition(coordinate.nativeEvent.position);
           }}
           onPoiClick={(e) => {
             console.log(e.nativeEvent.name);
