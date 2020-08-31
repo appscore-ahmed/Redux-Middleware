@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import LoginFormComponent from '../components/LoginFormComponent';
-import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as actionCreator from '../store/actions/actions';

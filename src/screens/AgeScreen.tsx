@@ -19,7 +19,12 @@ import Constants from 'expo-constants';
 
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { actionTypes } from '../store/actiontypes/actiontypes';
+import {
+  NavigationParams,
+  NavigationScreenProp,
+  NavigationState,
+} from 'react-navigation';
+import { useNavigation } from '../hooks/useNavigation';
 
 interface Age {
   age: number;
@@ -39,21 +44,32 @@ const addToFirebaseDatabase = async () => {
   await firebaseObject.child(key).set({ name: 'test' });
 };
 
+type navigation = NavigationScreenProp<NavigationState, NavigationParams>;
+
+const navigateTo = (navigation: navigation, route: string) => {
+  navigation.navigate(route);
+};
+
 const AgeScreen = (props: Age) => {
+  const navigation = useNavigation();
   const [age, setAge] = useState(0);
   const [expoPushToken, setExpoPushToken] = useState('');
 
-  useLayoutEffect(() => {
+  const getToken = () => {
     registerForPushNotificationsAsync().then((token) =>
       setExpoPushToken(token)
     );
+  };
+
+  useLayoutEffect(() => {
+    getToken();
 
     firebase
       .database()
-      .ref('/')
-      .on('child_added', (data) => {
+      .ref('/db')
+      .on('child_added', async (data) => {
         console.log(data);
-        sendPushNotification(expoPushToken);
+        await sendPushNotification(expoPushToken);
       });
   }, []);
 
@@ -92,9 +108,15 @@ const AgeScreen = (props: Age) => {
           title='fetch Data'
           onPress={() => {
             props.fetcher();
-            // console.log(props.name);
-            // setName(props.random);
             console.log(props.random);
+          }}
+        />
+      </View>
+      <View style={styles.buttonStyle}>
+        <Button
+          title='Open Map'
+          onPress={() => {
+            navigateTo(navigation, 'Map');
           }}
         />
       </View>
@@ -138,7 +160,6 @@ const AgeScreen = (props: Age) => {
 };
 
 async function sendPushNotification(expoPushToken: string) {
-  // if (expoPushToken) {
   console.log('token is: ');
   console.log(expoPushToken);
   const message = {
@@ -148,6 +169,8 @@ async function sendPushNotification(expoPushToken: string) {
     body: 'And here is the body!',
     data: { data: 'goes here' },
   };
+
+  console.log(message);
 
   await fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',
