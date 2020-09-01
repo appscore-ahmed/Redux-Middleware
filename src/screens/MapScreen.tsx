@@ -1,4 +1,4 @@
-import React, { useState, Component, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   Text,
   View,
@@ -6,10 +6,11 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import MapView, { Marker, Point } from 'react-native-maps';
-import * as Permissions from 'expo-permissions';
-import * as Location from 'expo-location';
-import { takeLatest } from 'redux-saga/effects';
+import MapView, { Marker } from 'react-native-maps';
+import * as ScreenOrientation from 'expo-screen-orientation';
+// import Orientation from 'react-native-orientation';
+import { DeviceMotion } from 'expo-sensors';
+import { takeLeading } from 'redux-saga/effects';
 
 type latitude = number;
 type longitude = number;
@@ -39,8 +40,8 @@ export interface LatLng {
 }
 
 interface position {
-  x: number | undefined;
-  y: number | undefined;
+  x: number;
+  y: number;
 }
 
 const MapScreen = () => {
@@ -52,9 +53,50 @@ const MapScreen = () => {
     longitude: 144.5592334,
   });
 
-  const [position, setPosition] = useState<position>();
+  const [orientation, setOrientation] = useState('portrait');
 
   useEffect(() => {
+    ScreenOrientation.addOrientationChangeListener((e) =>
+      console.log(e.orientationInfo.orientation)
+    );
+    DeviceMotion.isAvailableAsync().then(console.log);
+    // ScreenOrientation.addOrientationChangeListener((listener) => {
+    //   console.log(listener.orientationInfo.orientation);
+    //   ScreenOrientation.lockAsync(
+    //     data > 3 || (data > 0 && data < 0.5)
+    //       ? ScreenOrientation.OrientationLock.LANDSCAPE
+    //       : ScreenOrientation.OrientationLock.PORTRAIT
+    //   );
+    // });
+    DeviceMotion.addListener((listener) => {
+      const alpha = Math.abs(listener.rotation.alpha);
+      DeviceMotion.setUpdateInterval(16);
+
+      const orient =
+        alpha > 3 || (alpha > 0 && alpha < 0.5) ? 'landscape' : 'portrait';
+
+      if (orient !== orientation) {
+        if (orient !== 'portrait') {
+          setOrientation('landscape');
+          ScreenOrientation.lockAsync(
+            ScreenOrientation.OrientationLock.LANDSCAPE
+          );
+        } else {
+          setOrientation('portrait');
+          ScreenOrientation.lockAsync(
+            ScreenOrientation.OrientationLock.PORTRAIT
+          );
+        }
+      }
+      // ScreenOrientation.lockAsync(
+      //   orient !== 'portrait'
+      //     ? ScreenOrientation.OrientationLock.LANDSCAPE
+      //     : ScreenOrientation.OrientationLock.PORTRAIT
+      // );
+
+      console.log(orient);
+    });
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const _position = position.coords;
@@ -65,6 +107,11 @@ const MapScreen = () => {
       (error) => alert(error.message),
       { timeout: 20000, maximumAge: 1000 }
     );
+
+    return () => {
+      DeviceMotion.removeAllListeners();
+      ScreenOrientation.removeOrientationChangeListeners();
+    };
   }, []);
 
   return (
@@ -84,21 +131,21 @@ const MapScreen = () => {
           }}
           onRegionChange={setCurrentLocation}
           showsUserLocation
-          onLayout={() =>
-            // mapRef?.pointForCoordinate({
-            //   latitude: location.latitude,
-            //   longitude: location.longitude,
-            // })
-            mapRef?.coordinateForPoint({ x: position?.x, y: position?.y })
-          }
           // onUserLocationChange={(coordinate) =>
           //   console.log(coordinate.nativeEvent.coordinate)
           // }
           // onPanDrag={(coordinate) => console.log(coordinate.nativeEvent.coordinate)}
           onPress={(coordinate) => {
+            // mapRef
+            //   ?.coordinateForPoint({
+            //     x: coordinate.nativeEvent.position?.x,
+            //     y: coordinate.nativeEvent.position?.y,
+            //   })
+            //   .then((coords) => alert(coords.latitude))
+            //   .catch((e) => alert(e));
             setLocation(coordinate.nativeEvent.coordinate);
             console.log(coordinate.nativeEvent.position);
-            setPosition(coordinate.nativeEvent.position);
+            // setPosition(coordinate.nativeEvent.position);
           }}
           onPoiClick={(e) => {
             console.log(e.nativeEvent.name);

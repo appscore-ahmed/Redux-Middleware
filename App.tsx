@@ -72,7 +72,7 @@ const navigator = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Map',
     defaultNavigationOptions: {
       title: 'Redux-Middleware',
     },
