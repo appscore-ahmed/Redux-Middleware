@@ -49,6 +49,8 @@ const MapScreen = () => {
     latitude: -37.7123113,
     longitude: 144.5592334,
   });
+  const [width, setWidth] = useState(Dimensions.get('window').width);
+  const [height, setHeight] = useState(Dimensions.get('window').height);
 
   const [orientation, setOrientation] = useState(OrientationEnum.PORTRAIT);
 
@@ -71,9 +73,13 @@ const MapScreen = () => {
           await ScreenOrientation.lockAsync(
             ScreenOrientation.OrientationLock.LANDSCAPE
           );
+          setWidth(Dimensions.get('window').width);
+          setHeight(Dimensions.get('window').height);
           await ScreenOrientation.unlockAsync();
         } else {
           setOrientation(OrientationEnum.PORTRAIT);
+          setWidth(Dimensions.get('window').width);
+          setHeight(Dimensions.get('window').height);
           await ScreenOrientation.lockAsync(
             ScreenOrientation.OrientationLock.PORTRAIT
           );
@@ -110,7 +116,7 @@ const MapScreen = () => {
           ref={(ref) => {
             mapRef = ref;
           }}
-          style={styles.mapStyle}
+          style={{ width: width, height: height }}
           initialRegion={{
             latitude: location?.latitude,
             longitude: location?.longitude,
@@ -162,10 +168,10 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     backgroundColor: '#ecf0f1',
   },
-  mapStyle: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
+  // mapStyle: {
+  //   width: width,
+  //   height: height,
+  // },
   paragraph: {
     margin: 24,
     fontSize: 18,
