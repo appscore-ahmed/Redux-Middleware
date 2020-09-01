@@ -1,16 +1,8 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native';
+import { View, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as ScreenOrientation from 'expo-screen-orientation';
-// import Orientation from 'react-native-orientation';
 import { DeviceMotion } from 'expo-sensors';
-import { takeLeading } from 'redux-saga/effects';
 
 type latitude = number;
 type longitude = number;
@@ -34,7 +26,7 @@ const initialState = {
   longitudeDelta: 0.0421,
 };
 
-export interface LatLng {
+interface LatLng {
   latitude: number;
   longitude: number;
 }
@@ -42,6 +34,11 @@ export interface LatLng {
 interface position {
   x: number;
   y: number;
+}
+
+enum OrientationEnum {
+  PORTRAIT = 'portrait',
+  LANDSCAPE = 'landscape',
 }
 
 const MapScreen = () => {
@@ -53,48 +50,37 @@ const MapScreen = () => {
     longitude: 144.5592334,
   });
 
-  const [orientation, setOrientation] = useState('portrait');
+  const [orientation, setOrientation] = useState(OrientationEnum.PORTRAIT);
 
   useEffect(() => {
-    ScreenOrientation.addOrientationChangeListener((e) =>
-      console.log(e.orientationInfo.orientation)
-    );
+    /* Following code works fine detecting orientation. 
+    Might be improved. */
     DeviceMotion.isAvailableAsync().then(console.log);
-    // ScreenOrientation.addOrientationChangeListener((listener) => {
-    //   console.log(listener.orientationInfo.orientation);
-    //   ScreenOrientation.lockAsync(
-    //     data > 3 || (data > 0 && data < 0.5)
-    //       ? ScreenOrientation.OrientationLock.LANDSCAPE
-    //       : ScreenOrientation.OrientationLock.PORTRAIT
-    //   );
-    // });
-    DeviceMotion.addListener((listener) => {
+    DeviceMotion.addListener(async (listener) => {
       const alpha = Math.abs(listener.rotation.alpha);
-      DeviceMotion.setUpdateInterval(16);
+      DeviceMotion.setUpdateInterval(2000);
 
       const orient =
-        alpha > 3 || (alpha > 0 && alpha < 0.5) ? 'landscape' : 'portrait';
+        alpha > 3 || (alpha > 0 && alpha < 0.5)
+          ? OrientationEnum.LANDSCAPE
+          : OrientationEnum.PORTRAIT;
 
       if (orient !== orientation) {
-        if (orient !== 'portrait') {
-          setOrientation('landscape');
-          ScreenOrientation.lockAsync(
+        if (orient === OrientationEnum.PORTRAIT) {
+          setOrientation(OrientationEnum.LANDSCAPE);
+          await ScreenOrientation.lockAsync(
             ScreenOrientation.OrientationLock.LANDSCAPE
           );
+          await ScreenOrientation.unlockAsync();
         } else {
-          setOrientation('portrait');
-          ScreenOrientation.lockAsync(
+          setOrientation(OrientationEnum.PORTRAIT);
+          await ScreenOrientation.lockAsync(
             ScreenOrientation.OrientationLock.PORTRAIT
           );
+          await ScreenOrientation.unlockAsync();
         }
+        console.log(orient);
       }
-      // ScreenOrientation.lockAsync(
-      //   orient !== 'portrait'
-      //     ? ScreenOrientation.OrientationLock.LANDSCAPE
-      //     : ScreenOrientation.OrientationLock.PORTRAIT
-      // );
-
-      console.log(orient);
     });
 
     navigator.geolocation.getCurrentPosition(
@@ -108,6 +94,8 @@ const MapScreen = () => {
       { timeout: 20000, maximumAge: 1000 }
     );
 
+    /* following code is called only when app is exiting. Ideal for 
+    removing the listeners. */
     return () => {
       DeviceMotion.removeAllListeners();
       ScreenOrientation.removeOrientationChangeListeners();
@@ -145,12 +133,10 @@ const MapScreen = () => {
             //   .catch((e) => alert(e));
             setLocation(coordinate.nativeEvent.coordinate);
             console.log(coordinate.nativeEvent.position);
-            // setPosition(coordinate.nativeEvent.position);
           }}
           onPoiClick={(e) => {
             console.log(e.nativeEvent.name);
           }}
-          // showsMyLocationButton
         >
           <Marker
             coordinate={{
@@ -163,7 +149,6 @@ const MapScreen = () => {
       ) : (
         <ActivityIndicator style={{ flex: 1 }} animating size='large' />
       )}
-      {/* <Text>Location: {locationResult}</Text> */}
     </View>
   );
 };
