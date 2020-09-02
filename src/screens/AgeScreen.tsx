@@ -39,9 +39,9 @@ interface Age {
 
 const addToFirebaseDatabase = async () => {
   const firebaseObject = firebase.database().ref('/');
-  var key: string = firebaseObject.push().key;
+  var key: string | null = firebaseObject.push().key;
   console.log(key);
-  await firebaseObject.child(key).set({ name: 'test' });
+  if (key !== null) await firebaseObject.child(key).set({ name: 'test' });
 };
 
 type navigation = NavigationScreenProp<NavigationState, NavigationParams>;
@@ -53,12 +53,12 @@ const navigateTo = (navigation: navigation, route: string) => {
 const AgeScreen = (props: Age) => {
   const navigation = useNavigation();
   const [age, setAge] = useState(0);
-  const [expoPushToken, setExpoPushToken] = useState('');
+  const [expoPushToken, setExpoPushToken] = useState<string | undefined>('');
 
   const getToken = () => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    registerForPushNotificationsAsync().then((token) => {
+      setExpoPushToken(token);
+    });
   };
 
   useLayoutEffect(() => {
@@ -69,7 +69,7 @@ const AgeScreen = (props: Age) => {
       .ref('/db')
       .on('child_added', async (data) => {
         console.log(data);
-        await sendPushNotification(expoPushToken);
+        if (expoPushToken) await sendPushNotification(expoPushToken);
       });
   }, []);
 
@@ -124,7 +124,7 @@ const AgeScreen = (props: Age) => {
         <Button
           title='Send Notification'
           onPress={async () => {
-            await sendPushNotification(expoPushToken);
+            if (expoPushToken) await sendPushNotification(expoPushToken);
           }}
         />
       </View>
